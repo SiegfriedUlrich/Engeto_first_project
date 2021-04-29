@@ -41,7 +41,7 @@ password = input("password: ")
 if user not in login:
     print("This is not a valid username")
     quit()
-elif password not in login.values():
+elif login.get(user) != password:
     print("This is not a valid password")
     quit()
 else:
@@ -55,49 +55,50 @@ else:
 
 selection = input(f"Enter a number btw. 1 and {len(TEXTS)} to select: ")
 
-clean_text = []
-for word in TEXTS[int(selection) - 1].split():
-    clean_word = word.strip(",.:;'-")
-    clean_text.append(clean_word)
-print(f"There are {len(clean_text)} words in the selected text.")
+if selection.isalpha() or int(selection) == 0 or int(selection) > len(TEXTS):
+    print(f"Your input is not supported, please enter"
+          f" a number btw. 1 and {len(TEXTS)} to select.")
+else:
+    clean_text = []
+    titlecase_words = []
+    upercase_words = []
+    lowercase_words = []
+    numeric_strings = []
 
-titlecase_words = []
-for titlecase in clean_text:
-    if titlecase.istitle():
-        titlecase_words.append(titlecase)
-print(f"There are {len(titlecase_words)} titlecase words.")
+    for word in TEXTS[int(selection) - 1].split():
+        clean_word = word.strip(",.:;'-")
+        clean_text.append(clean_word)
 
-upercase_words = []
-for upercase in clean_text:
-    if upercase.isupper() and upercase.isalpha():
-        upercase_words.append(upercase)
-print(f"There are {len(upercase_words)} upercase words.")
+    for words in clean_text:
+        if words.istitle():
+            titlecase_words.append(words)
+        elif words.isupper() and words.isalpha():
+            upercase_words.append(words)
+        elif words.islower():
+            lowercase_words.append(words)
+        elif words.isdigit():
+            numeric_strings.append(int(words))
 
-lowercase_words = []
-for lowercase in clean_text:
-    if lowercase.islower():
-        lowercase_words.append(lowercase)
-print(f"There are {len(lowercase_words)} lowercase words.")
-
-numeric_strings = []
-for number in clean_text:
-    if number.isdigit():
-        numeric_strings.append(int(number))
-print(f"There are {len(numeric_strings)} numeric strings.")
-print(f"The sum of all numbers: {sum(numeric_strings)}")
-
-print(separator, f" LEN| OCCURRENCES         |NR.".center(40), separator, sep="\n")
-
-frequency = dict()
-
-for word in clean_text:
-    if len(word) not in frequency:
-        frequency[len(word)] = 1
-    else:
-        frequency[len(word)] = frequency[len(word)] + 1
-
-for index in sorted(frequency.items()):
-    print(f"{index[0]}   |"
-          f"{index[1] * '*':<20}"
-          f" |{index[1]}x".center(len(separator)), sep="\n"
+    print(f"There are {len(clean_text)} words in the selected text.",
+          f"There are {len(titlecase_words)} titlecase words.",
+          f"There are {len(upercase_words)} upercase words.",
+          f"There are {len(lowercase_words)} lowercase words.",
+          f"There are {len(numeric_strings)} numeric strings.",
+          f"The sum of all numbers: {sum(numeric_strings)}", sep="\n"
           )
+    print(separator, f" LEN| OCCURRENCES         |NR.".center(40), separator,
+          sep="\n")
+
+    frequency = dict()
+
+    for word in clean_text:
+        if len(word) not in frequency:
+            frequency[len(word)] = 1
+        else:
+            frequency[len(word)] = frequency[len(word)] + 1
+
+    for index in sorted(frequency.items()):
+        print(f"{index[0]}   |"
+              f"{index[1] * '*':<20}"
+              f" |{index[1]}x".center(len(separator)), sep="\n"
+              )
